@@ -1,8 +1,15 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const http = require('http');
 
-const genAI = new GoogleGenerativeAI("AQ.Ab8RN6I3WRvfChDTya5knk_ZgW5ZgIZh-23Ut0hmh3-T8_PEPA");
+// هذا الخادم البسيط يمنع Render من إغلاق البوت
+http.createServer((req, res) => {
+    res.write('Axis Bot is running successfully!');
+    res.end();
+}).listen(process.env.PORT || 3000);
+
+const genAI = new GoogleGenerativeAI('AQ.Ab8RN6I3WRvfChDTya5knk_ZgW5ZgIZh-23Ut0hmh3-T8_PEPA');
 
 const client = new Client({
     authStrategy: new LocalAuth()
