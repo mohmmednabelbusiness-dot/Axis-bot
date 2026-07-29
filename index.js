@@ -10,7 +10,8 @@ const client = new Client({
 });
 
 client.on('qr', (qr) => {
-    qrcode.generate(qr, { small: true });
+   const qrcode = require('qrcode-terminal');
+qrcode.generate(qr, { small: false });
     console.log('==> الرجاء مسح كود الـ QR باستخدام تطبيق الواتساب الخاص بك');
 });
 
