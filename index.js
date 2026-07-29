@@ -9,7 +9,7 @@ http.createServer((req, res) => {
     res.end();
 }).listen(process.env.PORT || 3000);
 
-const genAI = new GoogleGenerativeAI('AQ.Ab8RN6I3WRvfChDTya5knk_ZgW5ZgIZh-23Ut0hmh3-T8_PEPA');
+const genAI = new GoogleGenerativeAI("AQ.Ab8RN6I3WRvfChDTya5knk_ZgW5ZgIZh-23Ut0hmh3-T8_PEPA");
 
 const client = new Client({
     authStrategy: new LocalAuth()
