@@ -1,55 +1,46 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+const qrcode = require('qrcode');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// ضع مفتاح Gemini الخاص بك هنا
 const genAI = new GoogleGenerativeAI("AQ.Ab8RN6I3WRvfChDTya5knk_ZgW5ZgIZh-23Ut0hmh3-T8_PEPA");
 
 const client = new Client({
-    authStrategy: new LocalAuth() 
+    authStrategy: new LocalAuth()
 });
 
-client.on('qr', (qr) => {
-   const qrcode = require('qrcode-terminal');
-qrcode.generate(qr, { small: false });
-    console.log('==> الرجاء مسح كود الـ QR باستخدام تطبيق الواتساب الخاص بك');
+client.on('qr', async (qr) => {
+    console.log('انسخ هذا الرابط وافتحه في المتصفح لرؤية كود الـ QR بوضوح كصورة:');
+    console.log(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr)}`);
 });
 
 client.on('ready', () => {
-    console.log('==> تم الربط بنجاح! بوت Axis يعمل الآن.');
+    console.log('تم ربط Axis بنجاح!');
 });
 
 client.on('message', async msg => {
     try {
-        if(msg.from.includes('@g.us')) return;
+        if (msg.from.includes('@g.us')) return;
 
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-        
-        const prompt = `
-        أنت مندوب مبيعات ذكي واحترافي تمثل وكالة "Axis" للخدمات الرقمية.
-        الخدمات التي نقدمها للعملاء:
-        - زيادة المتابعين على جميع منصات التواصل الاجتماعي.
-        - توثيق الحسابات بالعلامة الزرقاء.
-        
-        تعليمات هامة لك:
-        1. لدينا حالياً عرض خاص بخصم 25% على جميع الخدمات. استخدم هذا الخصم لإقناع العميل.
-        2. تحدث بأسلوب لبق، مباشر، وواثق.
-        3. هدفك هو إقناع العميل بجودة خدماتنا وسرعة تنفيذها.
-        
-        رسالة العميل: ${msg.body}
-        `;
+
+        const prompt = `أنت مندوب مبيعات لشركة "Axis"، أجب على العميل بذكاء واحترافية.
+خدماتنا:
+1. إنشاء متاجر إلكترونية ومواقع.
+2. إدارة الحملات والإعلانات الممولة.
+3. برمجة روبوتات الرد الآلي (وتساب، تلجرام).
+
+العرض الحالي: خصم 25% على جميع الخدمات.
+رسالة العميل: ${msg.body}`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
 
         msg.reply(text);
-        
+
     } catch (error) {
-        console.error('حدث خطأ أثناء معالجة الرسالة:', error);
+        console.error('حدث خطأ:', error);
     }
 });
 
 client.initialize();
-const http = require('http');
-http.createServer((req, res) => res.end('Bot is running')).listen(process.env.PORT || 3000);
